@@ -5,8 +5,10 @@ import ExpenseCard from './components/ExpenseCard';
 import GoalCard from './components/GoalCard';
 import AssetCard from './components/AssetCard';
 import WishlistCard from './components/WishlistCard';
+import ToolsCard from './components/ToolsCard';
 import Dashboard from './components/Dashboard';
 import { OLLAMA_MODELS } from './utils/helpers';
+import ReportTemplate from './components/ReportTemplate';
 
 const App = () => {
   // --- Global State ---
@@ -145,7 +147,7 @@ const App = () => {
       <main className="main-grid">
         <section className="left-col">
           
-          {/* NEW: Tab Navigation */}
+          {/* Tab Navigation */}
           <div className="input-tabs">
             <button 
               className={inputTab === 'expenses' ? 'active' : ''} 
@@ -165,38 +167,81 @@ const App = () => {
             >
               Wishlist
             </button>
+            <button 
+              className={inputTab === 'tools' ? 'active' : ''} 
+              onClick={() => setInputTab('tools')}
+            >
+              Tools
+            </button>
           </div>
-
+          <ReportTemplate 
+                    id="printable-report"
+                    income={income}
+                    totalFixed={totalFixed}
+                    totalAssets={totalAssets}
+                    totalLiabilities={totalLiabilities}
+                    netWorth={netWorth}
+                    expenses={expenses}
+                    goals={goals}
+                    assets={assets}
+                    aiData={aiData}
+                />
           {/* CONDITIONAL RENDERING BASED ON TAB */}
           
-          {/* Tab 1: Expenses (Daily Cash Flow) */}
+          {/* Tab 1: Cash Flow (Expenses) */}
           {inputTab === 'expenses' && (
             <div className="fade-in">
-               <ExpenseCard expenses={expenses} setExpenses={setExpenses} totalFixed={totalFixed} />
+               <ExpenseCard 
+                 expenses={expenses} 
+                 setExpenses={setExpenses} 
+                 totalFixed={totalFixed} 
+               />
             </div>
           )}
 
           {/* Tab 2: Wealth (Assets & Goals) */}
           {inputTab === 'wealth' && (
             <div className="fade-in">
-               <AssetCard assets={assets} setAssets={setAssets} />
-               <GoalCard goals={goals} setGoals={setGoals} />
+               <AssetCard 
+                 assets={assets} 
+                 setAssets={setAssets} 
+               />
+               <GoalCard 
+                 goals={goals} 
+                 setGoals={setGoals} 
+               />
             </div>
           )}
 
-          {/* Tab 3: Wishlist (Analysis) */}
+          {/* Tab 3: Wishlist (Purchase Analysis) */}
           {inputTab === 'wishlist' && (
             <div className="fade-in">
                <WishlistCard 
-                 wishlist={wishlist} setWishlist={setWishlist}
-                 onAnalyze={analyzeBudget} isStreaming={isStreaming}
+                 wishlist={wishlist} 
+                 setWishlist={setWishlist}
+                 onAnalyze={analyzeBudget} 
+                 isStreaming={isStreaming}
+               />
+            </div>
+          )}
+
+          {/* Tab 4: Tools (Financial Calculators) */}
+          {inputTab === 'tools' && (
+            <div className="fade-in">
+               <ToolsCard 
+                 income={income} 
+                 expenses={expenses} 
+                 goals={goals} 
+                 assets={assets} 
+                 wishlist={wishlist} 
+                 modelName={modelName} 
                />
             </div>
           )}
 
         </section>
         
-        {/* Right Column stays exactly the same */}
+        {/* Right Column - Dashboard */}
         <Dashboard 
           income={income}
           totalFixed={totalFixed}
@@ -209,6 +254,7 @@ const App = () => {
           totalLiabilities={totalLiabilities}
           netWorth={netWorth}
           wishlist={wishlist}
+          assets={assets}
           aiData={aiData} 
           isStreaming={isStreaming}
         />

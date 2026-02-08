@@ -8,7 +8,7 @@ export const OLLAMA_MODELS = [
 ];
 
 // NEW: Semantic Colors
-export const CATEGORY_COLORS = {
+export const CHART_COLORS = {
   Bills: '#94a3b8',      // Slate Gray (Boring, fixed expenses)
   EMIs: '#ef4444',       // Red (Debt, negative impact)
   Goals: '#8b5cf6',      // Purple (Future savings, aspirational)
