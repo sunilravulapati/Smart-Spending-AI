@@ -4,8 +4,8 @@ import { calculateEMI } from '../utils/helpers'; // Reusing logic
 
 const ExpenseCard = ({ expenses, setExpenses, totalFixed }) => {
   const [expenseType, setExpenseType] = useState('Bill');
-  const [newExpense, setNewExpense] = useState({ 
-    name: '', amount: '', principal: '', rate: '', tenure: '' 
+  const [newExpense, setNewExpense] = useState({
+    name: '', amount: '', principal: '', rate: '', tenure: ''
   });
 
   // Auto-calculate EMI inside the form
@@ -28,43 +28,53 @@ const ExpenseCard = ({ expenses, setExpenses, totalFixed }) => {
         <TrendingUp size={18} />
         <h3>Monthly Outflow</h3>
       </div>
-      
-      <div className="type-toggle">
-         <button className={expenseType === 'Bill' ? 'active' : ''} onClick={() => setExpenseType('Bill')}>Regular Bill</button>
-         <button className={expenseType === 'Loan' ? 'active loan' : ''} onClick={() => setExpenseType('Loan')}>Loan / EMI</button>
+
+      <div className="input-tabs">
+        <button
+          className={expenseType === 'Bill' ? 'active' : ''}
+          onClick={() => setExpenseType('Bill')}
+        >
+          Regular Bill
+        </button>
+        <button
+          className={expenseType === 'Loan' ? 'active' : ''}
+          onClick={() => setExpenseType('Loan')}
+        >
+          Loan / EMI
+        </button>
       </div>
 
       <div className="input-stack">
-         <input 
-            placeholder={expenseType === 'Loan' ? "Loan Name" : "Expense Name"}
-            value={newExpense.name}
-            onChange={e => setNewExpense({...newExpense, name: e.target.value})}
-         />
-         
-         {expenseType === 'Loan' && (
-           <div className="loan-inputs fade-in">
-              <div className="mini-input">
-                 <label>Principal (₹)</label>
-                 <input type="number" value={newExpense.principal} onChange={e => setNewExpense({...newExpense, principal: e.target.value})} />
-              </div>
-              <div className="mini-input">
-                 <label>Rate (%)</label>
-                 <input type="number" value={newExpense.rate} onChange={e => setNewExpense({...newExpense, rate: e.target.value})} />
-              </div>
-              <div className="mini-input">
-                 <label>Months</label>
-                 <input type="number" value={newExpense.tenure} onChange={e => setNewExpense({...newExpense, tenure: e.target.value})} />
-              </div>
-           </div>
-         )}
+        <input
+          placeholder={expenseType === 'Loan' ? "Loan Name" : "Expense Name"}
+          value={newExpense.name}
+          onChange={e => setNewExpense({ ...newExpense, name: e.target.value })}
+        />
 
-         <div className="amount-row">
-            <div className="amount-input">
-              <span>₹</span>
-              <input type="number" placeholder="Amount" value={newExpense.amount} onChange={e => setNewExpense({...newExpense, amount: e.target.value})}/>
+        {expenseType === 'Loan' && (
+          <div className="loan-inputs fade-in">
+            <div className="mini-input">
+              <label>Principal (₹)</label>
+              <input type="number" value={newExpense.principal} onChange={e => setNewExpense({ ...newExpense, principal: e.target.value })} />
             </div>
-            <button className="icon-btn add-btn" onClick={addExpense}><Plus size={18}/></button>
-         </div>
+            <div className="mini-input">
+              <label>Rate (%)</label>
+              <input type="number" value={newExpense.rate} onChange={e => setNewExpense({ ...newExpense, rate: e.target.value })} />
+            </div>
+            <div className="mini-input">
+              <label>Months</label>
+              <input type="number" value={newExpense.tenure} onChange={e => setNewExpense({ ...newExpense, tenure: e.target.value })} />
+            </div>
+          </div>
+        )}
+
+        <div className="amount-row">
+          <div className="amount-input">
+            <span>₹</span>
+            <input type="number" placeholder="Amount" value={newExpense.amount} onChange={e => setNewExpense({ ...newExpense, amount: e.target.value })} />
+          </div>
+          <button className="icon-btn add-btn" onClick={addExpense}><Plus size={18} /></button>
+        </div>
       </div>
 
       <div className="items-list">
@@ -76,12 +86,12 @@ const ExpenseCard = ({ expenses, setExpenses, totalFixed }) => {
             </div>
             <div className="right-side">
               <strong>₹{e.amount}</strong>
-              <button className="icon-btn del-btn" onClick={() => setExpenses(expenses.filter(x => x.id !== e.id))}><Trash2 size={14}/></button>
+              <button className="icon-btn del-btn" onClick={() => setExpenses(expenses.filter(x => x.id !== e.id))}><Trash2 size={14} /></button>
             </div>
           </div>
         ))}
       </div>
-      
+
       <div className="card-footer">
         <span>Total Outflow</span>
         <span className="total-amount">₹{totalFixed}</span>
