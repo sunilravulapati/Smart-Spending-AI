@@ -1,70 +1,70 @@
-# Getting Started with Create React App
+# ProsperOS - AI-Powered Personal Finance System
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+**ProsperOS** is a privacy-first, local-first financial operating system designed for the Indian middle class. Unlike standard expense trackers, it calculates "True Free Cash," tracks Net Worth, forecasts future savings, and uses a local AI (LLM) to provide personalized financial strategy—all without your data ever leaving your device.
 
-## Available Scripts
+## 🚀 Key Features
 
-In the project directory, you can run:
+### 📊 Smart Dashboard
+- **Money Map:** Visual breakdown of Bills vs. EMIs vs. Goals vs. Free Cash.
+- **Debt Destroyer:** Automatically calculates DTI (Debt-to-Income) ratio and tracks total liabilities.
+- **Net Worth Tracker:** Real-time calculation of Assets (Gold, Stocks, Cash) minus Liabilities.
 
-### `npm start`
+### 🧠 Local AI Strategy (Privacy-First)
+- **Powered by Ollama:** Connects to local Llama 3 or Qwen 2.5 models.
+- **Opportunity Cost Engine:** "Reality Check" widget that calculates the 10-year future value of any wishlist purchase if invested instead.
+- **Spending Advice:** Context-aware advice based on your specific debt levels and cash flow.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### 🔮 Forecasting & Simulation
+- **12-Month Time Travel:** A line chart projecting your bank balance a year from now based on current spending vs. buying wishlist items.
+- **"What If" Simulator:** Stress-test your budget against inflation, salary hikes, or rent increases.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### 🛠 Tools
+- **Emergency Fund Calculator:** Calculates your runway based on liquid assets.
+- **PDF Reports:** Generate professional financial audit reports.
+- **Data Privacy:** Full Import/Export capability (JSON). No external database.
 
-### `npm test`
+## 🛠️ Tech Stack
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- **Frontend:** React.js
+- **Visualization:** Recharts
+- **Icons:** Lucide-React
+- **AI Integration:** Ollama (Local API)
+- **PDF Generation:** jsPDF, html2canvas
+---
+## ⚡ Getting Started
 
-### `npm run build`
+### Prerequisites
+1. **Node.js** installed on your machine.
+2. **Ollama** installed for AI features ([Download Here](https://ollama.com/)).
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Installation
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+1. **Clone the repository**
+   ```bash
+   git clone [https://github.com/yourusername/prosperos.git](https://github.com/yourusername/prosperos.git)
+   cd prosperos
+   ```
+2. **Install Dependencies**
+```bash
+npm install
+```
+3. **Setup Ollama (For AI Features) Pull the recommended model (Qwen 2.5 is best for math/logic):**
+```bash
+ollama run qwen2.5:7b
+```
+Note: Ensure Ollama is running in the background.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+4. **Run the App**
+```bash
+npm start
+```
+5. **Open http://localhost:3000 to view it in the browser.**
 
-### `npm run eject`
+---
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+⚠️ Important Note on AI
+This application connects to http://localhost:11434 to talk to your local AI.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+If you are running this locally, it works out of the box.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+If you encounter CORS errors, you may need to set the environment variable on your computer: OLLAMA_ORIGINS="*".
