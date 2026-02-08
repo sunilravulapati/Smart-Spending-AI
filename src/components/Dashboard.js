@@ -365,6 +365,10 @@ const Dashboard = ({
                     ) : (
                         <div className="empty-state">
                             <p>Run the analysis from the Wishlist tab to see AI recommendations.</p>
+                            <p style={{ fontSize: '0.8rem', color: '#64748b', marginTop: '10px' }}>
+                                * Note: AI features require a local Ollama instance running on your device.
+                                Clone the repo to test the AI integration fully.
+                            </p>
                         </div>
                     )}
                 </div>

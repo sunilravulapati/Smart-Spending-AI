@@ -18,8 +18,8 @@ const Header = ({ income, setIncome, modelName, setModelName }) => {
       <div className="logo-section">
         <Wallet className="logo-icon" size={28} />
         <div>
-          <h1>BudgetWise <span className="highlight">India</span></h1>
-          <p>Smart Finance OS</p>
+          <h1>Prosper<span className="highlight">OS</span></h1>
+          <p>Your financial operating system</p>
         </div>
       </div>
 
