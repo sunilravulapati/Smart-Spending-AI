@@ -7,18 +7,18 @@ import AssetCard from './components/AssetCard';
 import WishlistCard from './components/WishlistCard';
 import ToolsCard from './components/ToolsCard';
 import Dashboard from './components/Dashboard';
+import AlertBanner from './components/AlertBanner';
 import { GROQ_MODELS } from './utils/helpers';
 import ReportTemplate from './components/ReportTemplate';
 
 const App = () => {
-  // --- Global State ---
   const [modelName, setModelName] = useState(GROQ_MODELS[0].id);
   const [income, setIncome] = useState(0);
   const [expenses, setExpenses] = useState([]);
   const [goals, setGoals] = useState([]);
   const [assets, setAssets] = useState([]);
   const [wishlist, setWishlist] = useState([]);
-  const [aiData, setAiData] = useState(null); 
+  const [aiData, setAiData] = useState(null);
   const [isStreaming, setIsStreaming] = useState(false);
   const [inputTab, setInputTab] = useState('expenses');
 
@@ -36,36 +36,30 @@ const App = () => {
   }, []);
 
   useEffect(() => {
-    localStorage.setItem('budgetWise_v8', JSON.stringify({ 
-      income, expenses, goals, assets, wishlist, modelName 
+    localStorage.setItem('budgetWise_v8', JSON.stringify({
+      income, expenses, goals, assets, wishlist, modelName
     }));
   }, [income, expenses, goals, assets, wishlist, modelName]);
 
   // --- Calculations ---
-  
-  // 1. Fixed Expenses & Loans
   const totalFixed = expenses.reduce((acc, curr) => acc + parseFloat(curr.amount || 0), 0);
   const totalLoans = expenses.filter(e => e.type === 'Loan');
   const totalLoanEMI = totalLoans.reduce((acc, curr) => acc + parseFloat(curr.amount || 0), 0);
-  
-  // 2. Liabilities (Loan Principals)
   const totalPrincipal = totalLoans.reduce((acc, curr) => acc + parseFloat(curr.principal || 0), 0);
   const totalLiabilities = totalPrincipal;
-
-  // 3. Goals
   const totalGoals = goals.reduce((acc, curr) => acc + parseFloat(curr.monthly || 0), 0);
-
-  // 4. Surplus & Free Cash
   const monthlySurplus = parseFloat(income || 0) - totalFixed;
-  const freeCash = monthlySurplus - totalGoals; 
-
-  // 5. Assets & Net Worth
+  const freeCash = monthlySurplus - totalGoals;
   const totalAssets = assets.reduce((acc, curr) => acc + parseFloat(curr.value || 0), 0);
   const netWorth = totalAssets - totalLiabilities;
-
-  // 6. Wishlist Impact
   const wishlistImpact = wishlist.reduce((acc, item) => acc + (item.isEmi ? parseFloat(item.calculatedMonthly) : 0), 0);
   const postPurchaseFreeCash = freeCash - wishlistImpact;
+
+  // Liquid assets & runway for AlertBanner
+  const liquidAssets = assets
+    .filter(a => a.type === 'Cash' || a.type === 'Investment')
+    .reduce((acc, curr) => acc + parseFloat(curr.value || 0), 0);
+  const runwayMonths = parseFloat((liquidAssets / (totalFixed || 1)).toFixed(1));
 
   // --- AI Handler ---
   const analyzeBudget = async () => {
@@ -113,7 +107,7 @@ const App = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${process.env.REACT_APP_GROQ_API}`
+          'Authorization': `Bearer ${import.meta.env.VITE_GROQ_API}`
         },
         body: JSON.stringify({
           model: modelName,
@@ -141,45 +135,34 @@ const App = () => {
 
   return (
     <div className="app-container">
-      <Header 
-        income={income} 
-        setIncome={setIncome} 
+      <Header
+        income={income}
+        setIncome={setIncome}
         modelName={modelName}
         setModelName={setModelName}
       />
-      
+
+      {/* Smart Alert Banner — appears only when alerts exist */}
+      <AlertBanner
+        income={income}
+        expenses={expenses}
+        freeCash={freeCash}
+        runwayMonths={runwayMonths}
+        totalLoanEMI={totalLoanEMI}
+        wishlist={wishlist}
+      />
+
       <main className="main-grid">
         <section className="left-col">
-          
-          {/* Tab Navigation */}
+
           <div className="input-tabs">
-            <button 
-              className={inputTab === 'expenses' ? 'active' : ''} 
-              onClick={() => setInputTab('expenses')}
-            >
-              Cash Flow
-            </button>
-            <button 
-              className={inputTab === 'wealth' ? 'active' : ''} 
-              onClick={() => setInputTab('wealth')}
-            >
-              Wealth
-            </button>
-            <button 
-              className={inputTab === 'wishlist' ? 'active' : ''} 
-              onClick={() => setInputTab('wishlist')}
-            >
-              Wishlist
-            </button>
-            <button 
-              className={inputTab === 'tools' ? 'active' : ''} 
-              onClick={() => setInputTab('tools')}
-            >
-              Tools
-            </button>
+            <button className={inputTab === 'expenses' ? 'active' : ''} onClick={() => setInputTab('expenses')}>Cash Flow</button>
+            <button className={inputTab === 'wealth' ? 'active' : ''} onClick={() => setInputTab('wealth')}>Wealth</button>
+            <button className={inputTab === 'wishlist' ? 'active' : ''} onClick={() => setInputTab('wishlist')}>Wishlist</button>
+            <button className={inputTab === 'tools' ? 'active' : ''} onClick={() => setInputTab('tools')}>Tools</button>
           </div>
 
-          <ReportTemplate 
+          <ReportTemplate
             id="printable-report"
             income={income}
             totalFixed={totalFixed}
@@ -192,61 +175,46 @@ const App = () => {
             aiData={aiData}
           />
 
-          {/* Tab 1: Cash Flow (Expenses) */}
           {inputTab === 'expenses' && (
             <div className="fade-in">
-              <ExpenseCard 
-                expenses={expenses} 
-                setExpenses={setExpenses} 
-                totalFixed={totalFixed} 
-              />
+              <ExpenseCard expenses={expenses} setExpenses={setExpenses} totalFixed={totalFixed} />
             </div>
           )}
 
-          {/* Tab 2: Wealth (Assets & Goals) */}
           {inputTab === 'wealth' && (
             <div className="fade-in">
-              <AssetCard 
-                assets={assets} 
-                setAssets={setAssets} 
-              />
-              <GoalCard 
-                goals={goals} 
-                setGoals={setGoals} 
-              />
+              <AssetCard assets={assets} setAssets={setAssets} />
+              <GoalCard goals={goals} setGoals={setGoals} />
             </div>
           )}
 
-          {/* Tab 3: Wishlist (Purchase Analysis) */}
           {inputTab === 'wishlist' && (
             <div className="fade-in">
-              <WishlistCard 
-                wishlist={wishlist} 
+              <WishlistCard
+                wishlist={wishlist}
                 setWishlist={setWishlist}
-                onAnalyze={analyzeBudget} 
+                onAnalyze={analyzeBudget}
                 isStreaming={isStreaming}
               />
             </div>
           )}
 
-          {/* Tab 4: Tools (Financial Calculators) */}
           {inputTab === 'tools' && (
             <div className="fade-in">
-              <ToolsCard 
-                income={income} 
-                expenses={expenses} 
-                goals={goals} 
-                assets={assets} 
-                wishlist={wishlist} 
-                modelName={modelName} 
+              <ToolsCard
+                income={income}
+                expenses={expenses}
+                goals={goals}
+                assets={assets}
+                wishlist={wishlist}
+                modelName={modelName}
               />
             </div>
           )}
 
         </section>
-        
-        {/* Right Column - Dashboard */}
-        <Dashboard 
+
+        <Dashboard
           income={income}
           totalFixed={totalFixed}
           totalLoanEMI={totalLoanEMI}
@@ -259,7 +227,8 @@ const App = () => {
           netWorth={netWorth}
           wishlist={wishlist}
           assets={assets}
-          aiData={aiData} 
+          expenses={expenses}
+          aiData={aiData}
           isStreaming={isStreaming}
         />
       </main>

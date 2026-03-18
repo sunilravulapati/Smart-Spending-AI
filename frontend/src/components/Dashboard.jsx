@@ -9,12 +9,14 @@ import {
 } from 'lucide-react';
 import { CHART_COLORS, calculateFutureValue } from '../utils/helpers';
 import Simulator from './Simulator';
+import HealthScore from './HealthScore';
+import BillCalendar from './BillCalendar';
 
 const Dashboard = ({
     income, totalFixed, totalLoanEMI, totalPrincipal,
     monthlySurplus, totalGoals, freeCash,
     totalAssets, totalLiabilities, netWorth,
-    assets, // Assets array for Emergency Fund calculation
+    assets, expenses,
     aiData, isStreaming, wishlist
 }) => {
     const [activeTab, setActiveTab] = useState('health');
@@ -25,8 +27,8 @@ const Dashboard = ({
         .filter(a => a.type === 'Cash' || a.type === 'Investment')
         .reduce((acc, curr) => acc + parseFloat(curr.value || 0), 0);
 
-    const monthlyNeeds = totalFixed || 1; // Avoid divide by zero
-    const runwayMonths = (liquidAssets / monthlyNeeds).toFixed(1);
+    const monthlyNeeds = totalFixed || 1;
+    const runwayMonths = parseFloat((liquidAssets / monthlyNeeds).toFixed(1));
     const isRunwaySafe = runwayMonths >= 6;
     const isRunwayRisky = runwayMonths < 3;
 
@@ -62,7 +64,7 @@ const Dashboard = ({
     // --- Debt Calculations ---
     const debtRatio = ((totalLoanEMI / (income || 1)) * 100) || 0;
 
-    // --- Opportunity Cost Calculation ---
+    // --- Opportunity Cost ---
     const firstItem = wishlist && wishlist.length > 0 ? wishlist[0] : null;
     const itemCost = firstItem ? parseFloat(firstItem.cost) : 0;
     const fv5Years = calculateFutureValue(itemCost, 12, 5);
@@ -85,6 +87,20 @@ const Dashboard = ({
             {/* --- HEALTH TAB --- */}
             {activeTab === 'health' && (
                 <div className="dashboard-grid fade-in" id="dashboard-content">
+
+                    {/* 0. Health Score — FULL WIDTH, NEW */}
+                    <div className="full-width-card">
+                        <HealthScore
+                            income={income}
+                            totalFixed={totalFixed}
+                            totalGoals={totalGoals}
+                            freeCash={freeCash}
+                            totalLoanEMI={totalLoanEMI}
+                            runwayMonths={runwayMonths}
+                            netWorth={netWorth}
+                        />
+                    </div>
+
                     {/* 1. Money Map */}
                     <div className="card chart-card">
                         <div className="card-header">
@@ -111,7 +127,7 @@ const Dashboard = ({
                         </div>
                     </div>
 
-                    {/* 2. Emergency Fund Calculator */}
+                    {/* 2. Emergency Fund */}
                     <div className={`card emergency-card ${isRunwayRisky ? 'risk' : ''}`}>
                         <div className="card-header">
                             <Shield size={20} className={isRunwayRisky ? 'text-red' : 'text-green'} />
@@ -150,7 +166,12 @@ const Dashboard = ({
                         </div>
                     </div>
 
-                    {/* 3. Net Worth */}
+                    {/* 3. Bill Calendar — FULL WIDTH, NEW */}
+                    <div className="full-width-card">
+                        <BillCalendar expenses={expenses} />
+                    </div>
+
+                    {/* 4. Net Worth */}
                     <div className="card net-worth-card">
                         <div className="nw-header">
                             <div className="nw-title">
@@ -180,7 +201,7 @@ const Dashboard = ({
                         </div>
                     </div>
 
-                    {/* 4. Debt Destroyer */}
+                    {/* 5. Debt Destroyer */}
                     {totalLoanEMI > 0 && (
                         <div className="card debt-card">
                             <div className="card-header">
@@ -202,7 +223,7 @@ const Dashboard = ({
                         </div>
                     )}
 
-                    {/* 5. Stats Stack - Full Width */}
+                    {/* 6. Stats Stack */}
                     <div className="full-width-card">
                         <div className="stats-stack">
                             <div className="card stat-card">
@@ -228,9 +249,7 @@ const Dashboard = ({
                             <TrendingUp size={20} className="icon-blue" />
                             <h3>12-Month Savings Forecast</h3>
                         </div>
-                        <p className="subtext">
-                            Compares your savings with and without wishlist purchases
-                        </p>
+                        <p className="subtext">Compares your savings with and without wishlist purchases</p>
                         <div className="chart-wrapper">
                             <ResponsiveContainer width="100%" height={280}>
                                 <LineChart data={forecastData}>
@@ -239,18 +258,8 @@ const Dashboard = ({
                                     <YAxis />
                                     <Tooltip />
                                     <Legend />
-                                    <Line
-                                        type="monotone"
-                                        dataKey="Status Quo"
-                                        stroke="#10b981"
-                                        strokeWidth={2}
-                                    />
-                                    <Line
-                                        type="monotone"
-                                        dataKey="With Purchase"
-                                        stroke="#ef4444"
-                                        strokeWidth={2}
-                                    />
+                                    <Line type="monotone" dataKey="Status Quo" stroke="#10b981" strokeWidth={2} />
+                                    <Line type="monotone" dataKey="With Purchase" stroke="#ef4444" strokeWidth={2} />
                                 </LineChart>
                             </ResponsiveContainer>
                         </div>
@@ -271,11 +280,7 @@ const Dashboard = ({
             {/* --- SIMULATOR TAB --- */}
             {activeTab === 'simulator' && (
                 <div className="fade-in">
-                    <Simulator
-                        income={income}
-                        totalFixed={totalFixed}
-                        freeCash={freeCash}
-                    />
+                    <Simulator income={income} totalFixed={totalFixed} freeCash={freeCash} />
                 </div>
             )}
 
@@ -289,7 +294,6 @@ const Dashboard = ({
                         </div>
                     ) : aiData ? (
                         <>
-                            {/* AI Assessment */}
                             <div className="card ai-main-card">
                                 <div className="ai-header">
                                     <Sparkles size={18} color="#fbbf24" />
@@ -298,17 +302,12 @@ const Dashboard = ({
                                 <div className="ai-content">{aiData.assessment}</div>
                             </div>
 
-                            {/* Strategy Cards */}
                             {aiData.strategies && aiData.strategies.length > 0 && (
                                 <div className="strategy-grid">
                                     {aiData.strategies.map((strat, i) => (
                                         <div key={i} className="card strategy-card">
                                             <div className="strat-icon">
-                                                {i === 0 ? (
-                                                    <Zap size={18} color="#10b981" />
-                                                ) : (
-                                                    <Shield size={18} color="#3b82f6" />
-                                                )}
+                                                {i === 0 ? <Zap size={18} color="#10b981" /> : <Shield size={18} color="#3b82f6" />}
                                             </div>
                                             <div className="strat-content">
                                                 <h5>{strat.title}</h5>
@@ -319,7 +318,6 @@ const Dashboard = ({
                                 </div>
                             )}
 
-                            {/* Opportunity Cost "Reality Check" */}
                             {firstItem && (
                                 <div className="card opportunity-card">
                                     <div className="opp-header">
@@ -343,7 +341,6 @@ const Dashboard = ({
                                 </div>
                             )}
 
-                            {/* Verdict Card */}
                             {aiData.verdict && (
                                 <div className={`card verdict-card ${aiData.verdict.status === 'Safe' ? 'safe-border' : 'risky-border'}`}>
                                     <div className="verdict-header">
@@ -356,19 +353,13 @@ const Dashboard = ({
                                         <span>Free Cash Impact</span>
                                         <strong>{aiData.verdict.impact}</strong>
                                     </div>
-                                    <div className="verdict-text">
-                                        {aiData.verdict.advice}
-                                    </div>
+                                    <div className="verdict-text">{aiData.verdict.advice}</div>
                                 </div>
                             )}
                         </>
                     ) : (
                         <div className="empty-state">
                             <p>Run the analysis from the Wishlist tab to see AI recommendations.</p>
-                            <p style={{ fontSize: '0.8rem', color: '#64748b', marginTop: '10px' }}>
-                                * Note: AI features require a local Ollama instance running on your device.
-                                Clone the repo to test the AI integration fully.
-                            </p>
                         </div>
                     )}
                 </div>

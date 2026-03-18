@@ -1678,6 +1678,372 @@ input:checked + .slider:before { transform: translateX(16px); background: #0d111
   margin-top: 10px;
   width: 100%;
 }
+
+/* ======================================
+   ALERT BANNER
+====================================== */
+
+.alert-banner-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 20px;
+}
+
+.alert-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: var(--radius-md);
+  font-size: .8rem;
+  font-weight: 500;
+  position: relative;
+  animation: fadeIn .3s ease-out;
+}
+
+.alert-red {
+  background: rgba(248, 113, 113, 0.08);
+  border: 1px solid rgba(248, 113, 113, 0.2);
+  color: var(--accent-red);
+}
+
+.alert-amber {
+  background: rgba(245, 158, 11, 0.08);
+  border: 1px solid rgba(245, 158, 11, 0.2);
+  color: var(--primary);
+}
+
+.alert-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  animation: pulse 2s infinite;
+}
+
+.alert-dot-red { background: var(--accent-red); }
+.alert-dot-amber { background: var(--primary); }
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: .35; }
+}
+
+.alert-icon {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  opacity: .8;
+}
+
+.alert-text {
+  flex: 1;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.alert-dismiss {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--text-dim);
+  padding: 4px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  transition: all .2s;
+  flex-shrink: 0;
+}
+
+.alert-dismiss:hover {
+  background: rgba(255,255,255,.08);
+  color: var(--text-secondary);
+}
+
+/* ======================================
+   HEALTH SCORE CARD
+====================================== */
+
+.health-score-card {
+  background: linear-gradient(135deg, #0f1a2e 0%, #1c2333 100%);
+  border: 1px solid rgba(56, 189, 248, 0.15);
+  margin-bottom: 16px;
+}
+
+.health-grade {
+  margin-left: auto;
+  font-size: .65rem;
+  font-weight: 800;
+  padding: 3px 10px;
+  border-radius: 6px;
+  border: 1px solid;
+  font-family: 'DM Mono', monospace;
+  letter-spacing: .4px;
+}
+
+.health-score-body {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 6px 0 4px;
+}
+
+.health-ring-wrap {
+  position: relative;
+  width: 90px;
+  height: 90px;
+  flex-shrink: 0;
+}
+
+.health-ring-center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.health-score-num {
+  font-size: 1.5rem;
+  font-weight: 800;
+  font-family: 'DM Mono', monospace;
+  letter-spacing: -.03em;
+  line-height: 1;
+}
+
+.health-score-sub {
+  font-size: .55rem;
+  color: var(--text-dim);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .8px;
+  margin-top: 2px;
+}
+
+.health-pillars {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.health-pillar-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.health-pillar-lbl {
+  font-size: .7rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+  width: 90px;
+  flex-shrink: 0;
+}
+
+.health-pillar-bar-wrap {
+  flex: 1;
+  height: 5px;
+  background: var(--surface-3);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.health-pillar-bar {
+  height: 100%;
+  border-radius: 3px;
+  transition: width .6s ease;
+}
+
+.health-pillar-val {
+  font-size: .68rem;
+  color: var(--text-secondary);
+  font-family: 'DM Mono', monospace;
+  min-width: 36px;
+  text-align: right;
+}
+
+/* ======================================
+   BILL CALENDAR
+====================================== */
+
+.cal-card {
+  border-left: 3px solid var(--accent-purple);
+}
+
+.cal-month-label {
+  margin-left: auto;
+  font-size: .7rem;
+  color: var(--text-dim);
+  font-weight: 600;
+  font-family: 'DM Mono', monospace;
+}
+
+.cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 3px;
+  margin-top: 8px;
+}
+
+.cal-header-cell {
+  text-align: center;
+  font-size: .6rem;
+  font-weight: 700;
+  color: var(--text-dim);
+  padding: 4px 0;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+}
+
+.cal-cell {
+  aspect-ratio: 1;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: .68rem;
+  font-weight: 600;
+  cursor: default;
+  position: relative;
+  background: var(--surface-2);
+  color: var(--text-dim);
+  transition: all .15s;
+}
+
+.cal-cell.empty {
+  background: transparent;
+}
+
+.cal-cell:not(.empty):hover {
+  background: var(--surface-3);
+  color: var(--text);
+}
+
+.cal-today {
+  background: var(--primary-dim) !important;
+  color: var(--primary) !important;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  font-weight: 800;
+}
+
+.cal-has-bill {
+  background: rgba(248, 113, 113, 0.08) !important;
+  color: var(--text-secondary) !important;
+}
+
+.cal-has-income {
+  background: rgba(52, 211, 153, 0.07) !important;
+}
+
+.cal-day-num {
+  line-height: 1;
+}
+
+.cal-dot {
+  position: absolute;
+  bottom: 3px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+}
+
+.dot-bill { background: var(--accent-red); }
+.dot-income { background: var(--accent-green); }
+
+/* Tooltip */
+.cal-tooltip {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--surface-3);
+  border: 1px solid var(--border-bright);
+  border-radius: var(--radius-sm);
+  padding: 8px 10px;
+  z-index: 50;
+  min-width: 140px;
+  box-shadow: 0 8px 24px rgba(0,0,0,.5);
+  pointer-events: none;
+}
+
+.cal-tooltip-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: .7rem;
+  color: var(--text-secondary);
+  padding: 2px 0;
+  font-family: 'DM Mono', monospace;
+}
+
+.cal-legend {
+  display: flex;
+  gap: 14px;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+}
+
+.cal-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: .65rem;
+  color: var(--text-dim);
+  font-weight: 600;
+}
+
+.cal-today-swatch {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  background: var(--primary-dim);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  display: inline-block;
+}
+
+/* ======================================
+   GOAL CARD MILESTONE RINGS
+====================================== */
+
+.milestone-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 10px;
+  border-radius: var(--radius-sm);
+  transition: background .2s;
+  border: 1px solid transparent;
+}
+
+.milestone-item:hover {
+  background: var(--surface-2);
+  border-color: var(--border);
+}
+
+.milestone-ring {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+}
+
+.milestone-ring-center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: .58rem;
+  font-weight: 800;
+  font-family: 'DM Mono', monospace;
+}
 /* ======================================
    RESPONSIVE
 ====================================== */
