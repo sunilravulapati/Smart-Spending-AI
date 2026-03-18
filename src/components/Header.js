@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { Wallet, Settings } from 'lucide-react';
-import { OLLAMA_MODELS } from '../utils/helpers';
+import { GROQ_MODELS } from '../utils/helpers';
 
 const Header = ({ income, setIncome, modelName, setModelName }) => {
   const inputRef = useRef(null);
@@ -28,7 +28,7 @@ const Header = ({ income, setIncome, modelName, setModelName }) => {
         <div className="model-pill">
           <Settings size={14} />
           <select value={modelName} onChange={(e) => setModelName(e.target.value)}>
-            {OLLAMA_MODELS.map(m => (
+            {GROQ_MODELS.map(m => (
               <option key={m.id} value={m.id}>{m.name}</option>
             ))}
           </select>

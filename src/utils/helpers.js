@@ -1,18 +1,16 @@
-// src/utils/helpers.js
-
-export const OLLAMA_MODELS = [
-  { id: 'qwen2.5:7b', name: 'Qwen 2.5 (7B)', desc: 'Best for Math & Logic' },
-  { id: 'llama3.1', name: 'Llama 3.1', desc: 'Balanced & Reliable' },
-  { id: 'phi3', name: 'Phi-3', desc: 'Smart reasoning' },
-  { id: 'phi3:mini', name: 'Phi-3 Mini', desc: 'Fast & Lightweight' }
+export const GROQ_MODELS = [
+  { id: 'llama-3.3-70b-versatile', name: 'Llama 3.3 (70B)', desc: 'Most capable, best reasoning' },
+  { id: 'llama-3.1-8b-instant', name: 'Llama 3.1 (8B)', desc: 'Fast & lightweight' },
+  { id: 'mixtral-8x7b-32768', name: 'Mixtral 8x7B', desc: 'Great for structured JSON' },
+  { id: 'gemma2-9b-it', name: 'Gemma 2 (9B)', desc: 'Balanced & efficient' }
 ];
 
-// NEW: Semantic Colors
+
 export const CHART_COLORS = {
-  Bills: '#94a3b8',      // Slate Gray (Boring, fixed expenses)
-  EMIs: '#ef4444',       // Red (Debt, negative impact)
-  Goals: '#8b5cf6',      // Purple (Future savings, aspirational)
-  FreeCash: '#10b981'    // Emerald Green (Safe to spend!)
+  Bills: '#94a3b8',
+  EMIs: '#ef4444', 
+  Goals: '#8b5cf6', 
+  FreeCash: '#10b981'
 };
 
 export const calculateEMI = (p, r, n) => {

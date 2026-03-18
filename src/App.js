@@ -7,12 +7,12 @@ import AssetCard from './components/AssetCard';
 import WishlistCard from './components/WishlistCard';
 import ToolsCard from './components/ToolsCard';
 import Dashboard from './components/Dashboard';
-import { OLLAMA_MODELS } from './utils/helpers';
+import { GROQ_MODELS } from './utils/helpers';
 import ReportTemplate from './components/ReportTemplate';
 
 const App = () => {
   // --- Global State ---
-  const [modelName, setModelName] = useState(OLLAMA_MODELS[0].id);
+  const [modelName, setModelName] = useState(GROQ_MODELS[0].id);
   const [income, setIncome] = useState(0);
   const [expenses, setExpenses] = useState([]);
   const [goals, setGoals] = useState([]);
@@ -31,7 +31,7 @@ const App = () => {
       setGoals(saved.goals || []);
       setAssets(saved.assets || []);
       setWishlist(saved.wishlist || []);
-      setModelName(saved.modelName || OLLAMA_MODELS[0].id);
+      setModelName(saved.modelName || GROQ_MODELS[0].id);
     }
   }, []);
 
@@ -109,28 +109,32 @@ const App = () => {
     `;
 
     try {
-      const response = await fetch('http://localhost:11434/api/chat', {
+      const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${process.env.REACT_APP_GROQ_API}`
+        },
         body: JSON.stringify({
           model: modelName,
           messages: [
-            { role: "system", content: "Output valid JSON only. Speak English." }, 
+            { role: "system", content: "Output valid JSON only. Speak English." },
             { role: "user", content: prompt }
           ],
-          stream: false, 
-          format: "json"
+          max_tokens: 1000,
+          temperature: 0.7,
+          response_format: { type: "json_object" }
         })
       });
 
       const data = await response.json();
       try {
-        setAiData(JSON.parse(data.message.content));
+        setAiData(JSON.parse(data.choices[0].message.content));
       } catch (e) {
-        setAiData({ assessment: data.message.content, strategies: [], verdict: null });
+        setAiData({ assessment: data.choices[0].message.content, strategies: [], verdict: null });
       }
     } catch (err) {
-      setAiData({ assessment: "Error connecting to AI.", strategies: [], verdict: null });
+      setAiData({ assessment: "Error connecting to Groq API. Check your API key.", strategies: [], verdict: null });
     }
     setIsStreaming(false);
   };
@@ -174,68 +178,68 @@ const App = () => {
               Tools
             </button>
           </div>
+
           <ReportTemplate 
-                    id="printable-report"
-                    income={income}
-                    totalFixed={totalFixed}
-                    totalAssets={totalAssets}
-                    totalLiabilities={totalLiabilities}
-                    netWorth={netWorth}
-                    expenses={expenses}
-                    goals={goals}
-                    assets={assets}
-                    aiData={aiData}
-                />
-          {/* CONDITIONAL RENDERING BASED ON TAB */}
-          
+            id="printable-report"
+            income={income}
+            totalFixed={totalFixed}
+            totalAssets={totalAssets}
+            totalLiabilities={totalLiabilities}
+            netWorth={netWorth}
+            expenses={expenses}
+            goals={goals}
+            assets={assets}
+            aiData={aiData}
+          />
+
           {/* Tab 1: Cash Flow (Expenses) */}
           {inputTab === 'expenses' && (
             <div className="fade-in">
-               <ExpenseCard 
-                 expenses={expenses} 
-                 setExpenses={setExpenses} 
-                 totalFixed={totalFixed} 
-               />
+              <ExpenseCard 
+                expenses={expenses} 
+                setExpenses={setExpenses} 
+                totalFixed={totalFixed} 
+              />
             </div>
           )}
 
           {/* Tab 2: Wealth (Assets & Goals) */}
           {inputTab === 'wealth' && (
             <div className="fade-in">
-               <AssetCard 
-                 assets={assets} 
-                 setAssets={setAssets} 
-               />
-               <GoalCard 
-                 goals={goals} 
-                 setGoals={setGoals} 
-               />
+              <AssetCard 
+                assets={assets} 
+                setAssets={setAssets} 
+              />
+              <GoalCard 
+                goals={goals} 
+                setGoals={setGoals} 
+              />
             </div>
           )}
 
           {/* Tab 3: Wishlist (Purchase Analysis) */}
           {inputTab === 'wishlist' && (
             <div className="fade-in">
-               <WishlistCard 
-                 wishlist={wishlist} 
-                 setWishlist={setWishlist}
-                 onAnalyze={analyzeBudget} 
-                 isStreaming={isStreaming}
-               />
+              <WishlistCard 
+                wishlist={wishlist} 
+                setWishlist={setWishlist}
+                onAnalyze={analyzeBudget} 
+                isStreaming={isStreaming}
+              />
             </div>
           )}
 
           {/* Tab 4: Tools (Financial Calculators) */}
           {inputTab === 'tools' && (
             <div className="fade-in">
-               <ToolsCard 
-                 income={income} 
-                 expenses={expenses} 
-                 goals={goals} 
-                 assets={assets} 
-                 wishlist={wishlist} 
-                 modelName={modelName} 
-               />
+              <ToolsCard 
+                income={income} 
+                expenses={expenses} 
+                goals={goals} 
+                assets={assets} 
+                wishlist={wishlist} 
+                modelName={modelName} 
+              />
             </div>
           )}
 
